@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RoutePass</title>
+  <meta name="description" content="RoutePass is a checkpoint and event tracking app for organizers and participants." />
+  <style>
+    :root{
+      --bg:#e9e9e9;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+      --brand:#0f5f8f;
+      --brand2:#2d8ac7;
+      --soft:#f7fafc;
+      --shadow:0 12px 32px rgba(0,0,0,.08);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(45,138,199,.20), transparent 30%),
+        radial-gradient(circle at top right, rgba(15,95,143,.16), transparent 28%),
+        var(--bg);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:24px}
+    .nav{
+      position:sticky;top:0;z-index:10;
+      backdrop-filter: blur(10px);
+      background:rgba(233,233,233,.78);
+      border-bottom:1px solid rgba(255,255,255,.35);
+    }
+    .nav-inner{
+      max-width:1100px;margin:0 auto;padding:14px 24px;
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700}
+    .logo{
+      width:42px;height:42px;border-radius:12px;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:#fff;display:grid;place-items:center;font-size:20px;
+      box-shadow:0 8px 20px rgba(15,95,143,.28);
+    }
+    .nav a{color:var(--text);text-decoration:none}
+    .nav-links{display:flex;gap:18px;flex-wrap:wrap}
+    .hero{
+      display:grid;grid-template-columns:1.2fr 1fr;gap:28px;
+      align-items:center;padding:42px 0 24px;
+    }
+    .hero-card,.card{
+      background:rgba(255,255,255,.82);
+      border:1px solid rgba(255,255,255,.6);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+    }
+    .hero-copy{padding:34px}
+    .eyebrow{
+      display:inline-block;padding:8px 12px;border-radius:999px;
+      background:#eef7fd;color:var(--brand);font-weight:600;font-size:.92rem;
+      margin-bottom:14px;
+    }
+    h1{font-size:clamp(2.3rem,5vw,4.2rem);line-height:1.02;margin:0 0 14px}
+    .lead{font-size:1.08rem;color:var(--muted);max-width:60ch}
+    .actions{display:flex;gap:14px;flex-wrap:wrap;margin-top:22px}
+    .btn{
+      display:inline-block;padding:13px 18px;border-radius:14px;font-weight:600;
+      text-decoration:none;border:1px solid transparent;
+    }
+    .btn-primary{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff}
+    .btn-secondary{background:#fff;color:var(--text);border-color:var(--line)}
+    .hero-visual{padding:22px}
+    .phone{
+      width:min(340px,100%);margin:0 auto;border-radius:34px;padding:14px;
+      background:#121826;box-shadow:0 16px 40px rgba(0,0,0,.20);
+    }
+    .screen{
+      min-height:610px;border-radius:24px;overflow:hidden;background:#f8fafc;
+      position:relative;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.0), rgba(255,255,255,.85)),
+        radial-gradient(circle at 70% 18%, rgba(251,191,36,.70), transparent 22%),
+        linear-gradient(180deg, #7dc7f3 0%, #daf0ff 42%, #d7e8c2 43%, #6ba35f 100%);
+    }
+    .screen-top{padding:16px 18px 8px;color:#fff;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+    .map-card{
+      margin:16px;background:rgba(255,255,255,.92);border-radius:20px;padding:16px;
+      box-shadow:0 10px 24px rgba(0,0,0,.08);
+    }
+    .map-box{
+      height:240px;border-radius:18px;position:relative;overflow:hidden;
+      background:
+        linear-gradient(45deg, rgba(34,197,94,.10) 25%, transparent 25%, transparent 75%, rgba(34,197,94,.10) 75%),
+        linear-gradient(-45deg, rgba(59,130,246,.10) 25%, transparent 25%, transparent 75%, rgba(59,130,246,.10) 75%),
+        #eef6ef;
+      background-size:32px 32px;
+      border:1px solid #e5e7eb;
+    }
+    .route{
+      position:absolute;left:14%;top:68%;width:60%;height:4px;background:#0f5f8f;
+      transform:rotate(-28deg);border-radius:999px;
+      box-shadow:0 0 0 6px rgba(15,95,143,.08);
+    }
+    .pin,.pin2,.gps{
+      position:absolute;width:18px;height:18px;border-radius:50%;
+      box-shadow:0 4px 10px rgba(0,0,0,.12);
+    }
+    .pin{left:64%;top:26%;background:#ef4444}
+    .pin2{left:20%;top:68%;background:#f59e0b}
+    .gps{left:50%;top:48%;background:#2563eb}
+    .stat-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px;
+    }
+    .stat{
+      background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:12px;
+    }
+    .stat b{display:block;font-size:1.1rem}
+    section{padding:18px 0}
+    .section-head{margin-bottom:16px}
+    .section-head h2{font-size:2rem;margin:0 0 8px}
+    .section-head p{color:var(--muted);margin:0}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .feature{padding:22px}
+    .icon{
+      width:46px;height:46px;border-radius:14px;background:#eef7fd;color:var(--brand);
+      display:grid;place-items:center;font-size:22px;margin-bottom:12px;
+    }
+    .feature h3{margin:0 0 8px}
+    .feature p{margin:0;color:var(--muted)}
+    .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .step{padding:20px}
+    .step-num{
+      width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-weight:700;margin-bottom:10px;
+    }
+    .links{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+    }
+    .link-card{padding:20px;text-decoration:none;color:inherit}
+    .link-card small{color:var(--muted)}
+    .footer{
+      color:var(--muted);padding:26px 0 40px;text-align:center;
+    }
+    @media (max-width: 900px){
+      .hero,.grid-3,.steps,.links{grid-template-columns:1fr}
+      .screen{min-height:500px}
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="logo">R</div>
+        <a href="index.html">RoutePass</a>
+      </div>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="support.html">Support</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-card hero-copy">
+        <div class="eyebrow">Checkpoint & event tracking</div>
+        <h1>Track. Validate. Complete.</h1>
+        <p class="lead">
+          RoutePass helps organizers and participants manage checkpoint-based events with reliable location verification,
+          simple event workflows, and clear progress tracking.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="privacy.html">View Privacy Policy</a>
+          <a class="btn btn-secondary" href="support.html">Get Support</a>
+        </div>
+      </div>
+
+      <div class="hero-card hero-visual">
+        <div class="phone">
+          <div class="screen">
+            <div class="screen-top">RoutePass</div>
+            <div class="map-card">
+              <div class="map-box">
+                <div class="route"></div>
+                <div class="pin"></div>
+                <div class="pin2"></div>
+                <div class="gps"></div>
+              </div>
+              <div class="stat-grid">
+                <div class="stat"><span>Current event</span><b>Sunrise Ride</b></div>
+                <div class="stat"><span>Checkpoints</span><b>4 / 6</b></div>
+                <div class="stat"><span>Status</span><b>Verified</b></div>
+                <div class="stat"><span>GPS</span><b>Active</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="section-head">
+        <h2>Built for smooth event operations</h2>
+        <p>Everything needed to run checkpoint-based activities with confidence.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card feature">
+          <div class="icon">📍</div>
+          <h3>Checkpoint validation</h3>
+          <p>Use device location to help verify arrivals at the correct checkpoint while the app is in use.</p>
+        </div>
+        <div class="card feature">
+          <div class="icon">🗺️</div>
+          <h3>Clear route progress</h3>
+          <p>Track event progress with a focused, map-inspired interface designed for quick checks in the field.</p>
+        </div>
+        <div class="card feature">
+          <div class="icon">📸</div>
+          <h3>Optional photo submissions</h3>
+          <p>Support event workflows with image uploads and related checkpoint submissions when needed.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="how">
+      <div class="section-head">
+        <h2>How RoutePass works</h2>
+        <p>A simple flow for organizers and participants.</p>
+      </div>
+      <div class="steps">
+        <div class="card step">
+          <div class="step-num">1</div>
+          <h3>Sign in</h3>
+          <p>Use Google Sign-In to access your event account.</p>
+        </div>
+        <div class="card step">
+          <div class="step-num">2</div>
+          <h3>Join or manage an event</h3>
+          <p>Open the event and view route details, checkpoints, and progress.</p>
+        </div>
+        <div class="card step">
+          <div class="step-num">3</div>
+          <h3>Validate checkpoints</h3>
+          <p>Confirm arrivals with location while using the app.</p>
+        </div>
+        <div class="card step">
+          <div class="step-num">4</div>
+          <h3>Complete submissions</h3>
+          <p>Upload event-related evidence and finalize progress.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <h2>Public pages</h2>
+        <p>Use these links for Google Play and Google OAuth setup.</p>
+      </div>
+      <div class="links">
+        <a class="card link-card" href="privacy.html">
+          <h3>Privacy Policy</h3>
+          <small>Required for store listing and OAuth</small>
+        </a>
+        <a class="card link-card" href="terms.html">
+          <h3>Terms of Service</h3>
+          <small>Recommended for product site setup</small>
+        </a>
+        <a class="card link-card" href="support.html">
+          <h3>Support</h3>
+          <small>Contact, help, and deletion requests</small>
+        </a>
+      </div>
+    </section>
+
+    <div class="footer">
+      © 2026 RoutePass
+    </div>
+  </div>
+</body>
+</html>
