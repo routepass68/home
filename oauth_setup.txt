@@ -1,0 +1,22 @@
+RoutePass Google OAuth setup
+
+Branding
+- App name: RoutePass
+- User support email: YOUR_EMAIL@example.com
+- Developer contact email: YOUR_EMAIL@example.com
+
+App domain
+- Homepage: https://yourusername.github.io/
+- Privacy Policy: https://yourusername.github.io/privacy.html
+- Terms of Service: https://yourusername.github.io/terms.html
+
+Audience
+- External
+
+Suggested app description
+RoutePass is an event and checkpoint tracking app for organizers and participants. It uses Google Sign-In to identify users and supports checkpoint validation using device location, event participation, and optional event-related submissions such as photos.
+
+Reminder
+- Replace YOUR_EMAIL@example.com
+- Replace yourusername
+- Add github.io as an authorized domain if using GitHub Pages
